@@ -2,7 +2,10 @@ package utils;
 
 import models.BufferReadResponse;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class FileManager {
     private static FileManager ourInstance = new FileManager();
@@ -16,7 +19,7 @@ public class FileManager {
     private FileManager() {
     }
 
-    public void setupFile(File file) {
+    void setupFile(File file) {
         try {
             fileInputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
@@ -25,9 +28,9 @@ public class FileManager {
     }
 
 
-    public BufferReadResponse readNextBuffer() {
+    BufferReadResponse readNextBuffer() {
         byte[] readBuffer = new byte[1024];
-        int readNoOfBytes=0;
+        int readNoOfBytes = 0;
         if (!isFileEnded) {
             try {
                 readNoOfBytes = fileInputStream.read(readBuffer);
@@ -38,7 +41,7 @@ public class FileManager {
                 e.printStackTrace();
             }
         }
-        return new BufferReadResponse(readBuffer,readNoOfBytes);
+        return new BufferReadResponse(readBuffer, readNoOfBytes);
     }
 
 }

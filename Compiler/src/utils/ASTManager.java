@@ -1,51 +1,13 @@
 package utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
+import models.AST.*;
 import models.Terminal;
 import models.Token;
 import models.TokenType;
-import models.AST.AParamsNode;
-import models.AST.ArithExprNode;
-import models.AST.AssignStatNode;
-import models.AST.ClassListNode;
-import models.AST.ClassNode;
-import models.AST.DataMemberNode;
-import models.AST.DimListNode;
-import models.AST.ExprNode;
-import models.AST.FCallNode;
-import models.AST.FParamListNode;
-import models.AST.FParamNode;
-import models.AST.FactorNode;
-import models.AST.ForStatNode;
-import models.AST.FuncDeclNode;
-import models.AST.FuncDefListNode;
-import models.AST.FuncDefNode;
-import models.AST.IdNode;
-import models.AST.IfStatNode;
-import models.AST.IndexListNode;
-import models.AST.InherListNode;
-import models.AST.MainNode;
-import models.AST.MemberListNode;
-import models.AST.MultOpNode;
-import models.AST.Node;
-import models.AST.NumNode;
-import models.AST.OpNode;
-import models.AST.ProgramBlockNode;
-import models.AST.ReadStatNode;
-import models.AST.RelExprNode;
-import models.AST.ReturnStatNode;
-import models.AST.ScopeSpecNode;
-import models.AST.StatBlockNode;
-import models.AST.StatementNode;
-import models.AST.TermNode;
-import models.AST.TypeNode;
-import models.AST.VarDeclNode;
-import models.AST.VarElementNode;
-import models.AST.VarNode;
-import models.AST.WriteStatNode;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class ASTManager {
     private static ASTManager ourInstance = new ASTManager();
@@ -89,7 +51,7 @@ public class ASTManager {
                     Node classList = new ClassListNode();
                     List<Node> childNodeList = new ArrayList<>();
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("classDecl"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             classList.lineNumber = semanticStack.peek().lineNumber;
                             classList.colNumber = semanticStack.peek().colNumber;
                         }
@@ -105,7 +67,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("funcDef"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             functionListNode.lineNumber = semanticStack.peek().lineNumber;
                             functionListNode.colNumber = semanticStack.peek().colNumber;
                         }
@@ -144,7 +106,7 @@ public class ASTManager {
                         childNodeList.add(semanticStack.pop());
                     }
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("varDecl"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             memberList.lineNumber = semanticStack.peek().lineNumber;
                             memberList.colNumber = semanticStack.peek().colNumber;
                         }
@@ -162,7 +124,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("id"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             inherList.lineNumber = semanticStack.peek().lineNumber;
                             inherList.colNumber = semanticStack.peek().colNumber;
                         }
@@ -191,7 +153,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("num"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             dimListNode.lineNumber = semanticStack.peek().lineNumber;
                             dimListNode.colNumber = semanticStack.peek().colNumber;
                         }
@@ -207,7 +169,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("fparam"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             fParamListNode.lineNumber = semanticStack.peek().lineNumber;
                             fParamListNode.colNumber = semanticStack.peek().colNumber;
                         }
@@ -223,7 +185,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("arithExpr"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             indexListNode.lineNumber = semanticStack.peek().lineNumber;
                             indexListNode.colNumber = semanticStack.peek().colNumber;
                         }
@@ -240,7 +202,7 @@ public class ASTManager {
                     Node aParams = new AParamsNode();
                     List<Node> childNodeList = new ArrayList<>();
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("expr"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             aParams.lineNumber = semanticStack.peek().lineNumber;
                             aParams.colNumber = semanticStack.peek().colNumber;
                         }
@@ -392,7 +354,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("varElement"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             varNode.lineNumber = semanticStack.peek().lineNumber;
                             varNode.colNumber = semanticStack.peek().colNumber;
                         }
@@ -590,7 +552,7 @@ public class ASTManager {
                     List<Node> childNodeList = new ArrayList<>();
 
                     while (semanticStack.size() > 0 && (semanticStack.peek().getNodeCategory().equals("statement") || semanticStack.peek().getNodeCategory().equals("varDecl"))) {
-                        if(semanticStack.peek().lineNumber>0) {
+                        if (semanticStack.peek().lineNumber > 0) {
                             stateBlock.lineNumber = semanticStack.peek().lineNumber;
                             stateBlock.colNumber = semanticStack.peek().colNumber;
                         }
@@ -633,7 +595,7 @@ public class ASTManager {
                 Node numNode = new NumNode(token.getTokenValue());
                 numNode.setNodeCategory("num");
                 numNode.setType(token.getTokenType().getTokenType());
-                if(token.getTokenType().getTokenType().equals(TokenType.INTEGER.getTokenType())) {
+                if (token.getTokenType().getTokenType().equals(TokenType.INTEGER.getTokenType())) {
                     numNode.setType(Terminal.INT.getData());
                 }
                 numNode.lineNumber = token.getLineNumber();

@@ -9,7 +9,6 @@ public class BufferManager {
     private byte[] buffer1;
     private byte[] buffer2;
     private int lexemeForward = 0;
-    private int lexemeEnd = -1;
     private int bufferIndex = 1;
     private boolean isEOF = false;
     private int currentLineNumber = 1;
@@ -24,14 +23,6 @@ public class BufferManager {
 
     public boolean isEOF() {
         return isEOF;
-    }
-
-    public static BufferManager getOurInstance() {
-        return ourInstance;
-    }
-
-    public int getLexemeForward() {
-        return lexemeForward;
     }
 
     public int getColumnNumber() {
@@ -55,11 +46,6 @@ public class BufferManager {
 
     }
 
-    public void backtrackLexemeForward(){
-        if(lexemeForward>0) {
-            lexemeForward--;
-        }
-    }
     public char getNextCharFromBuffer() {
         char charfromBuffer = 0;
         switch (bufferIndex) {

@@ -25,7 +25,7 @@ public class Main {
         }else{
             System.out.println("Error while parsing Input");
         }
-        LexicalResponseManager.getInstance().finisheWriting();
+        LexicalResponseManager.getInstance().finishWriting();
     }
 
 

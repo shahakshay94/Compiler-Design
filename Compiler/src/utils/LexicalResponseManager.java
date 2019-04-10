@@ -1,15 +1,15 @@
 package utils;
 
+import global.Constants;
+import models.Token;
+import models.TokenType;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import global.Constants;
-import models.Token;
-import models.TokenType;
 
 class ErrorMessage{
     private String type;
@@ -79,7 +79,6 @@ public class LexicalResponseManager {
         }
     }
 
-
     public void initialize() {
 
     }
@@ -99,7 +98,7 @@ public class LexicalResponseManager {
         errorMessageList.add(errorMessage);
     }
 
-    public void finalWriteErroListToFile(){
+    public void writeErrorListToFile(){
         sortErrorMessageListBasedOnLineNum();
         for(ErrorMessage errorMessage : errorMessageList){
             if(errorMessage.getLineNum()>0) {
@@ -117,11 +116,11 @@ public class LexicalResponseManager {
         }
     }
 
-    public void finisheWriting() {
+    public void finishWriting() {
         tokenWriterFile.close();
         aTOccWriterFile.close();
         derivationWriterFile.close();
-        finalWriteErroListToFile();
+        writeErrorListToFile();
         errorWriterFile.close();
         symbolTableWriter.close();
         ASTWriter.close();
@@ -139,6 +138,7 @@ public class LexicalResponseManager {
             addErrorMessage(token.getLineNumber(),token.getColumnNumber(),"Syntax Error","Expected: "+expected+" but found: "+token.getTokenValue());
         }
     }
+
     public void writeSyntacticalError(Token token) {
         if (token != null) {
             addErrorMessage(token.getLineNumber(),token.getColumnNumber(),"Syntax Error",token.getTokenValue());
