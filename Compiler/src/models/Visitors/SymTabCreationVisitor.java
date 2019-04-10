@@ -167,7 +167,7 @@ public class SymTabCreationVisitor extends Visitor {
                 for (SymTabEntry symTabEntry : node.symtab.m_symlist) {
                     if (symTabEntry.symbolType == SymTabEntry.SymbolType.CLASS && symTabEntry.m_subtable != null && symTabEntry.m_subtable.m_name.equals(inheritedNode.getData())) {
                         // Circular dependence at first level: Check if already entry exist
-                        //TODO test below conditiion not sure it will work..
+                        //TODO test below condition not sure it will work..
                         clasSymTabFound = true;
                         if (classNode.symtabentry.inheritedSymTab.contains(symTabEntry)) {
                             inheritedNode.generatePosition();
@@ -237,19 +237,6 @@ public class SymTabCreationVisitor extends Visitor {
             child.accept(this);
         }
 
-        /*// add the symbol table entries of all the variables declared in the statement block
-        addAllSymbolInParentTable(node.symtab, node, node.getChildren());
-
-        for (Node stat : node.getChildren()) {
-			*//*if (stat.symtabentry != null)
-				node.symtab.addEntry(stat.symtabentry);*//*
-            if (stat.getNodeCategory().equals("statement") && stat.getChildren().get(0).getNodeCategory().equals("forStat")) {
-                SymTab table = stat.getChildren().get(0).symtab;
-                SymTabEntry symTabEntry = new SymTabEntry("For:", table);
-                symTabEntry.createdFromNode = node;
-                node.symtab.addEntry(symTabEntry);
-            }
-        }*/
     }
 
 

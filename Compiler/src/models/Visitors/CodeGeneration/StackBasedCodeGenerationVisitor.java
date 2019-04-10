@@ -235,7 +235,7 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             List<Node> dimList = dataMemberNode.getChildren().get(1).getChildren();
 
             SymTabEntry symTabEntry = searchSymTab.lookupName(idNode.m_moonVarName);
-            int offset = symTabEntry.m_offset;
+            int offset = symTabEntry.m_offset * -1;
             System.out.println("MoonVarName:" + idNode.m_moonVarName + " Offset:" + offset + " Size:" + symTabEntry.m_size);
             if (dimList.size() == 0) {
                 return offset;
@@ -793,7 +793,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
     }
 
 
-    // TODO paramsDEC need to check with symtabentry ...
     private SymTabEntry generateCodeForObjectReference(Node fCallNode,String paramsDec){
         VarNode varNode =getVarNodeFromFcallNode(fCallNode);
         SymTab symTab = varNode.symtab;
@@ -807,9 +806,7 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
                         return null;
                     }
                 }else if(symTabEntry.symbolType == SymTabEntry.SymbolType.FUNCTION){
-                    // TODO test if working or not ..
                     return symTab.lookupFunction(child.getData(),paramsDec);
-//                    return symTabEntry;
                 }
             }
         }

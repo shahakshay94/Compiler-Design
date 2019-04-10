@@ -213,12 +213,6 @@ public class ASTManager {
                     semanticStack.push(aParams);
                     break;
                 }
-                /*case "SEMANTIC_MAKE_FAMILY_INDICE": {
-                    //TODO inice is left we dont have any AST for indice ..
-                    error part left
-                    transferFromOneFamilyToOther(semanticStack.peek(), "indice");
-                    break;
-                }*/
                 case "SEMANTIC_MAKE_FAMILY_FACTOR": {
                     Node factorVarFCallNode = semanticStack.pop();
                     Node factorNode = new FactorNode(factorVarFCallNode);
@@ -314,7 +308,6 @@ public class ASTManager {
                 }
 
                 case "SEMANTIC_MAKE_FAMILY_EXPR": {
-                    //TODO factor should not be come here it should automatically set as arithexpr or relexpr
                     Node expNode = new ExprNode();
                     if (semanticStack.peek().getNodeCategory().equals("arithExpr") || semanticStack.peek().getNodeCategory().equals("relExpr") || (semanticStack.peek().getNodeCategory().equals("factor"))) {
                         expNode.lineNumber = semanticStack.peek().lineNumber;
@@ -531,7 +524,6 @@ public class ASTManager {
                     break;
                 }
                 case "SEMANTIC_MAKE_FAMILY_STATEMENT": {
-                    // TODO also possible solution : semanticStack.peek().setNodeCategory("statement");
 
                     Node statementNode = new StatementNode();
                     statementNode.lineNumber = semanticStack.peek().lineNumber;
@@ -547,7 +539,6 @@ public class ASTManager {
                 case "SEMANTIC_MAKE_FAMILY_STATEMENT_BLOCK": {
                 }
                 case "SEMANTIC_MAKE_FAMILY_ST_BLOCK": {
-                    //TODO should not have statblock in while condition fix it...
                     Node stateBlock = new StatBlockNode();
                     List<Node> childNodeList = new ArrayList<>();
 
@@ -566,7 +557,6 @@ public class ASTManager {
                     break;
                 }
                 case "SEMANTIC_MAKE_FAMILY_ASSIGN_LEFT_VAR": {
-                    //TODO left var is left test if it works fine or not ...
                     semanticStack.peek().setNodeCategory("assignLeftVar");
                     break;
                 }
