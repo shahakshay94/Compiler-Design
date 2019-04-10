@@ -1,23 +1,18 @@
-import java.util.ArrayList;
-import java.util.List;
-
 import exception.StateNotFoundException;
-import models.Lexeme;
-import models.State;
-import models.StateTransition;
-import models.StateTransitionTable;
-import models.Token;
-import models.TokenType;
+import models.*;
 import utils.BufferManager;
 import utils.TokenManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TokenGenerator {
 
     private List<StateTransition> currentStateList = new ArrayList<>();
     private char lexeme;
     public static TokenGenerator instance;
-    public StringBuilder generatedToken ;
-    private boolean skipMultiLineCommnent=false;
+    public StringBuilder generatedToken;
+    private boolean skipMultiLineComment = false;
 
     public static TokenGenerator getInstance() {
         if (instance == null) {
@@ -37,7 +32,7 @@ public class TokenGenerator {
     }
 
     public Token getNextToken() {
-        if (generatedToken==null /*lexeme not initialized*/) {
+        if (generatedToken == null /*lexeme not initialized*/) {
             lexeme = BufferManager.getInstance().getNextCharFromBuffer();
         }
         resetState();
@@ -68,16 +63,16 @@ public class TokenGenerator {
                     if (state != null && state.isFinalState()) {
                         if (generatedToken.toString().equals("//")) {
                             BufferManager.getInstance().skipThisLine();
-                            generatedToken =new StringBuilder();
-                        }else if (generatedToken.toString().equals("/*")) {
-                            skipMultiLineCommnent = true;
-                            generatedToken =new StringBuilder();
-                        }else if (generatedToken.toString().equals("*/")) {
-                            generatedToken =new StringBuilder();
-                            skipMultiLineCommnent = false;
-                        } else if(skipMultiLineCommnent){
-                            generatedToken =new StringBuilder();
-                        }else {
+                            generatedToken = new StringBuilder();
+                        } else if (generatedToken.toString().equals("/*")) {
+                            skipMultiLineComment = true;
+                            generatedToken = new StringBuilder();
+                        } else if (generatedToken.toString().equals("*/")) {
+                            generatedToken = new StringBuilder();
+                            skipMultiLineComment = false;
+                        } else if (skipMultiLineComment) {
+                            generatedToken = new StringBuilder();
+                        } else {
                             Token token = new Token(currentState.getTokenTypeGenerated(), generatedToken.toString(), BufferManager.getInstance().getCurrentLineNumber(), BufferManager.getInstance().getColumnNumber());
                             return token;
                         }
@@ -88,7 +83,7 @@ public class TokenGenerator {
                 if (generatedToken.length() == 0) {
                     // below code will work with whitespace also ..
                     // if lexeme not in the list of valid list then it will invalid token ..
-                    if(!skipMultiLineCommnent) {
+                    if (!skipMultiLineComment) {
                         List<Lexeme> lexemeList = TokenManager.getInstance().getPossibleTokenListFromInput(lexeme);
                         if (!lexemeList.isEmpty()) {
                             generatedToken.append(lexeme);

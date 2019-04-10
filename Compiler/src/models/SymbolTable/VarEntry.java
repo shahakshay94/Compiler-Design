@@ -14,7 +14,7 @@ public class VarEntry extends SymTabEntry {
 				String.format("%-12s" , "| " + symbolName) +
 				String.format("%-12s"  , "| " + m_type) + 
 				String.format("%-8s"  , "| " + m_size) + 
-				String.format("%-8s"  , "| " + m_offset)
+				String.format("%-8s"  , "| " + m_offset * -1)
 		        + "|";
 	}
 }

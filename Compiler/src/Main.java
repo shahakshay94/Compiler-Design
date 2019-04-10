@@ -63,6 +63,8 @@ public class Main {
 
         createRequiredFolders();
 
+        File d = new File("./");
+        System.out.println(d.getAbsolutePath());
         // get filepath from user input args
         File inputFile = null;
         if (args.length > 0) {

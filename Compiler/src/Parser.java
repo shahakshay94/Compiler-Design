@@ -1,17 +1,11 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-
-import models.GrammarExpression;
-import models.LL1ParseTable;
-import models.NonTerminal;
-import models.Terminal;
-import models.Token;
-import models.TokenType;
+import models.*;
 import utils.ASTManager;
 import utils.GrammarExpressionGenerator;
 import utils.LexicalResponseManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class Parser {
     private static Parser ourInstance = new Parser();
@@ -22,7 +16,7 @@ public class Parser {
     private boolean isTokenStringCompleted = false;
     private Token token;
     private List<String> derivation = new ArrayList<>();
-    private int lastIndexPushed=0;
+    private int lastIndexPushed = 0;
 
     public static Parser getInstance() {
         return ourInstance;
@@ -38,7 +32,7 @@ public class Parser {
         LL1ParseTable.initLL1ParseTable();
     }
 
-    public boolean parse() {
+    boolean parse() {
         stack.push("$");
         stack.push(grammarExpressionList.get(0).getName());
         derivation.add(stack.peek());
@@ -64,7 +58,7 @@ public class Parser {
                 ASTManager.getInstance().makeNode(tokenString, token);
 
                 if (x.equals(tokenString)) {
-                    addDerivation(x,token.getTokenValue());
+                    addDerivation(x, token.getTokenValue());
                     stack.pop();
 //                    System.out.println(stack.toString());
                     token = nextToken();
@@ -88,7 +82,7 @@ public class Parser {
             }
         }
         LexicalResponseManager.getInstance().addDerivationToFIle(derivation);
-        if(token==null){
+        if (token == null) {
             return success;
         }
         return (!token.getTokenType().getTokenType().equals("$")) && (success);
@@ -98,37 +92,34 @@ public class Parser {
         int indexToPush = -1;
         for (int index = 0; index < derivation.size(); index++) {
             String der = derivation.get(index);
-            if (der.equals(x) && lastIndexPushed<=index) {
+            if (der.equals(x) && lastIndexPushed <= index) {
                 indexToPush = index;
                 break;
             }
         }
-        for (Iterator<String> iterator = proudctionList.iterator(); iterator.hasNext();) {
-            String string = iterator.next();
-            if (string.contains("EPSILON")) {
-                // Remove the current element from the iterator and the list.
-                iterator.remove();
-            }
-        }
+        // Remove the current element from the iterator and the list.
+        proudctionList.removeIf(string -> string.contains("EPSILON"));
         derivation.remove(indexToPush);
-        lastIndexPushed=indexToPush;
-        derivation.addAll(indexToPush,proudctionList);
+        lastIndexPushed = indexToPush;
+        derivation.addAll(indexToPush, proudctionList);
         LexicalResponseManager.getInstance().addDerivationToFIle(derivation);
     }
+
     private void addDerivation(String x, String terminal) {
         int indexToPush = -1;
         for (int index = 0; index < derivation.size(); index++) {
             String der = derivation.get(index);
-            if (der.equals(x) && lastIndexPushed<=index) {
+            if (der.equals(x) && lastIndexPushed <= index) {
                 indexToPush = index;
                 break;
             }
         }
         derivation.remove(indexToPush);
-        lastIndexPushed=indexToPush;
-        derivation.add(indexToPush,terminal);
+        lastIndexPushed = indexToPush;
+        derivation.add(indexToPush, terminal);
         LexicalResponseManager.getInstance().addDerivationToFIle(derivation);
     }
+
     private void removeDerivation(String x) {
         int indexToPush = -1;
         for (int index = 0; index < derivation.size(); index++) {
@@ -170,18 +161,17 @@ public class Parser {
         int nonTerminalIndex = NonTerminal.getNonTerminalIndexFromString(x);
         if (terminalIndex != -1 && nonTerminalIndex != -1) {
             int LL1ParseTableEntry = LL1ParseTable.Table[nonTerminalIndex][terminalIndex];
-//            System.out.println("Grammar for top:" + x + "  token:" + tokenString + " terminalIndex:" + terminalIndex + " nonTerminalIndex:" + nonTerminalIndex + " LLEntry:" + LL1ParseTableEntry);
+
             if (LL1ParseTableEntry != POP_ERROR_CODE && LL1ParseTableEntry != SCAN_ERROR_CODE) {
-                GrammarExpression grammarExpression = grammarExpressionList.get(LL1ParseTableEntry - 1);
-//                System.out.println("Grammar:" + grammarExpression.getProudctionList().toString());
-                return grammarExpression;
+
+                return grammarExpressionList.get(LL1ParseTableEntry - 1);
             }
         }
         return null;
     }
 
-    private void skipMissingError(String input){
-        LexicalResponseManager.getInstance().writeSyntacticalMissingError(input,token);
+    private void skipMissingError(String input) {
+        LexicalResponseManager.getInstance().writeSyntacticalMissingError(input, token);
         stack.pop();
     }
 
@@ -189,7 +179,7 @@ public class Parser {
         System.out.println("Syntax error at:" + token.getLineNumber());
         LexicalResponseManager.getInstance().writeSyntacticalError(token);
         int LL1ParseTableEntry = getParseTableEntry(input);
-        if (LL1ParseTableEntry == POP_ERROR_CODE || LL1ParseTableEntry==-1) {
+        if (LL1ParseTableEntry == POP_ERROR_CODE || LL1ParseTableEntry == -1) {
             stack.pop();
         } else {
             while (LL1ParseTableEntry == SCAN_ERROR_CODE) {
@@ -212,8 +202,7 @@ public class Parser {
         int terminalIndex = Terminal.getTerminalIndexFromString(tokenString);
         int nonTerminalIndex = NonTerminal.getNonTerminalIndexFromString(input);
         if (terminalIndex != -1 && nonTerminalIndex != -1) {
-            int LL1ParseTableEntry = LL1ParseTable.Table[nonTerminalIndex][terminalIndex];
-            return LL1ParseTableEntry;
+            return LL1ParseTable.Table[nonTerminalIndex][terminalIndex];
         }
         return -1;
     }
@@ -230,9 +219,9 @@ public class Parser {
                 return null;
             }
         }
-        while (token.getTokenType()==(TokenType.INVALID_IDENTIFIER) || token.getTokenType()==(TokenType.INVALID_NUMBER)){
+        while (token.getTokenType() == (TokenType.INVALID_IDENTIFIER) || token.getTokenType() == (TokenType.INVALID_NUMBER)) {
             token = TokenGenerator.getInstance().getNextToken();
-            if(token==null){
+            if (token == null) {
                 break;
             }
             LexicalResponseManager.getInstance().writeLexicalResponseToFile(token);
