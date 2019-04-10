@@ -1,65 +1,19 @@
 package models.Visitors;
 
-import static models.SymbolTable.SymTabEntry.SymbolDataType.CLASS;
-import static models.SymbolTable.SymTabEntry.SymbolDataType.FLOAT;
-import static models.SymbolTable.SymTabEntry.SymbolDataType.INT;
+import models.AST.*;
+import models.SymbolTable.SymTab;
+import models.SymbolTable.SymTabEntry;
+import models.Terminal;
+import utils.ASTManager;
 
 import java.io.File;
 import java.io.PrintWriter;
 
-import models.Terminal;
-import models.AST.AParamsNode;
-import models.AST.AddOpNode;
-import models.AST.ArithExprNode;
-import models.AST.AssignStatNode;
-import models.AST.ClassListNode;
-import models.AST.ClassNode;
-import models.AST.DataMemberNode;
-import models.AST.DimListNode;
-import models.AST.ExprNode;
-import models.AST.FCallNode;
-import models.AST.FParamListNode;
-import models.AST.FParamNode;
-import models.AST.FactorNode;
-import models.AST.FactorSignNode;
-import models.AST.ForStatNode;
-import models.AST.FuncDeclNode;
-import models.AST.FuncDefListNode;
-import models.AST.FuncDefNode;
-import models.AST.IdNode;
-import models.AST.IfStatNode;
-import models.AST.IndexListNode;
-import models.AST.InherListNode;
-import models.AST.MainNode;
-import models.AST.MemberListNode;
-import models.AST.MultOpNode;
-import models.AST.Node;
-import models.AST.NumNode;
-import models.AST.OpNode;
-import models.AST.ParamListNode;
-import models.AST.ProgramBlockNode;
-import models.AST.ReadStatNode;
-import models.AST.RelExprNode;
-import models.AST.ReturnStatNode;
-import models.AST.ScopeSpecNode;
-import models.AST.StatBlockNode;
-import models.AST.StatementNode;
-import models.AST.TermNode;
-import models.AST.TypeNode;
-import models.AST.VarDeclNode;
-import models.AST.VarElementNode;
-import models.AST.VarNode;
-import models.AST.WriteStatNode;
-import models.SymbolTable.SymTab;
-import models.SymbolTable.SymTabEntry;
-import utils.ASTManager;
-
-/**
- */
+import static models.SymbolTable.SymTabEntry.SymbolDataType.*;
 
 public class ComputeMemSizeVisitor extends Visitor {
 
-    public String m_outputfilename = new String();
+    public String m_outputfilename = "";
 
     public ComputeMemSizeVisitor() {
     }
@@ -73,8 +27,8 @@ public class ComputeMemSizeVisitor extends Visitor {
         int size = 0;
         Node progNode = ASTManager.getInstance().getProgNode();
         for (SymTabEntry symTabEntry : progNode.symtab.m_symlist) {
-            if (symTabEntry.symbolType == SymTabEntry.SymbolType.CLASS && symTabEntry.m_subtable != null && symTabEntry.m_subtable.m_name.equals(className) ) {
-                if(symTabEntry.m_subtable.m_size>0){
+            if (symTabEntry.symbolType == SymTabEntry.SymbolType.CLASS && symTabEntry.m_subtable != null && symTabEntry.m_subtable.m_name.equals(className)) {
+                if (symTabEntry.m_subtable.m_size > 0) {
                     return symTabEntry.m_subtable.m_size;
                 }
                 return calculateMemSizeOfClassNode(symTabEntry);
@@ -83,8 +37,8 @@ public class ComputeMemSizeVisitor extends Visitor {
         return size;
     }
 
-    public int calculateMemSizeOfClassNode(SymTabEntry symTabEntry){
-        int size=0;
+    public int calculateMemSizeOfClassNode(SymTabEntry symTabEntry) {
+        int size = 0;
         for (SymTabEntry classSymTabEntry : symTabEntry.m_subtable.m_symlist) {
             if (classSymTabEntry.symbolDataType != CLASS) {
                 size += sizeOfEntry(classSymTabEntry);
@@ -92,7 +46,7 @@ public class ComputeMemSizeVisitor extends Visitor {
                 size += getSizeOfClassObject(classSymTabEntry.extraData);
             }
         }
-        for(SymTabEntry inheritedSymTab : symTabEntry.multiLevelInheritedSymTab){
+        for (SymTabEntry inheritedSymTab : symTabEntry.multiLevelInheritedSymTab) {
             size += getSizeOfClassObject(inheritedSymTab.symbolName);
         }
         symTabEntry.m_subtable.m_size = size;
@@ -103,9 +57,9 @@ public class ComputeMemSizeVisitor extends Visitor {
     public int sizeOfEntry(Node p_node) {
         int size = 0;
         try {
-            if ((p_node.getType()!=null && p_node.getType().equals(Terminal.INT.getData())) || (p_node.symtabentry!=null &&p_node.symtabentry.symbolDataType == INT) || p_node.symtabentry.m_type.equals(Terminal.INT.getData()))
+            if ((p_node.getType() != null && p_node.getType().equals(Terminal.INT.getData())) || (p_node.symtabentry != null && p_node.symtabentry.symbolDataType == INT) || p_node.symtabentry.m_type.equals(Terminal.INT.getData()))
                 size = 4;
-            else if (p_node.symtabentry.symbolDataType == FLOAT || p_node.getType().equals(Terminal.FLOAT.getData()))
+            else if (p_node.getType() != null && (p_node.symtabentry.symbolDataType == FLOAT || p_node.getType().equals(Terminal.FLOAT.getData())))
                 size = 8;
 
             // if it is an array, multiply by all dimension sizes
@@ -114,11 +68,12 @@ public class ComputeMemSizeVisitor extends Visitor {
                     size *= Integer.parseInt(dim.getData());
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ignored) {
 
         }
         return size;
     }
+
     public int sizeOfEntry(SymTabEntry p_nodeTabEntry) {
         int size = 0;
         if ((p_nodeTabEntry.symbolDataType == INT))
@@ -137,11 +92,11 @@ public class ComputeMemSizeVisitor extends Visitor {
     public int sizeOfTypeNode(Node p_node) {
         int size = 0;
         try {
-            if (p_node.symtabentry.symbolDataType == INT || p_node.getType().equals(Terminal.INT.getData()) )
+            if (p_node.symtabentry.symbolDataType == INT || p_node.getType().equals(Terminal.INT.getData()))
                 size = 4;
-            else if (p_node.symtabentry.symbolDataType == FLOAT || p_node.getType().equals(Terminal.FLOAT.getData()) )
+            else if (p_node.symtabentry.symbolDataType == FLOAT || p_node.getType().equals(Terminal.FLOAT.getData()))
                 size = 8;
-        }catch (Exception ex){
+        } catch (Exception ignored) {
 
         }
         return size;
@@ -170,8 +125,8 @@ public class ComputeMemSizeVisitor extends Visitor {
         for (Node child : node.getChildren())
             child.accept(this);
 
-        for (SymTabEntry entry : node.symtab.m_symlist){
-            entry.m_offset     = node.symtab.m_size - entry.m_size;
+        for (SymTabEntry entry : node.symtab.m_symlist) {
+            entry.m_offset = node.symtab.m_size - entry.m_size;
             node.symtab.m_size -= entry.m_size;
         }
     }
@@ -194,6 +149,7 @@ public class ComputeMemSizeVisitor extends Visitor {
             p_node.symtab.m_size -= entry.m_size;
         }
     }
+
     public void visit(FuncDefNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -238,7 +194,7 @@ public class ComputeMemSizeVisitor extends Visitor {
                         size *= Integer.parseInt(dim.getData());
                     }
                 }
-                p_node.symtabentry.m_size =size;
+                p_node.symtabentry.m_size = size;
                 break;
         }
     }
@@ -251,7 +207,7 @@ public class ComputeMemSizeVisitor extends Visitor {
             child.accept(this);
 
         SymTab symTab = node.symtab;
-        while (symTab.m_name.equals("For")){
+        while (symTab.m_name.equals("For")) {
             symTab = symTab.m_uppertable;
         }
 
@@ -260,6 +216,7 @@ public class ComputeMemSizeVisitor extends Visitor {
             symTab.m_size -= entry.m_size;
         }
     }
+
     public void visit(FParamNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -267,8 +224,9 @@ public class ComputeMemSizeVisitor extends Visitor {
             child.accept(this);
 
         // determine the size for basic variables
-       generateSizeOfVarNode(p_node);
+        generateSizeOfVarNode(p_node);
     }
+
     public void visit(AddOpNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -304,7 +262,7 @@ public class ComputeMemSizeVisitor extends Visitor {
         for (Node child : node.getChildren())
             child.accept(this);
 
-        if(node.symtabentry!=null) {
+        if (node.symtabentry != null) {
             node.symtabentry.m_size = this.sizeOfEntry(node);
         }
 
@@ -318,6 +276,7 @@ public class ComputeMemSizeVisitor extends Visitor {
 
         p_node.symtabentry.m_size = this.sizeOfEntry(p_node);
     }
+
     public void visit(NumNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -349,7 +308,7 @@ public class ComputeMemSizeVisitor extends Visitor {
         for (Node child : node.getChildren())
             child.accept(this);
 
-        if(node.symtabentry!=null) {
+        if (node.symtabentry != null) {
             node.symtabentry.m_size = this.sizeOfEntry(node);
         }
 
@@ -475,7 +434,7 @@ public class ComputeMemSizeVisitor extends Visitor {
             child.accept(this);
 
 
-        if(node.symtabentry!=null){
+        if (node.symtabentry != null) {
             node.symtabentry.m_size = this.sizeOfEntry(node);
         }
     }
@@ -527,7 +486,7 @@ public class ComputeMemSizeVisitor extends Visitor {
         for (Node child : node.getChildren())
             child.accept(this);
 
-        if(node.symtabentry!=null){
+        if (node.symtabentry != null) {
             node.symtabentry.m_size = this.sizeOfEntry(node);
         }
 
@@ -586,7 +545,6 @@ public class ComputeMemSizeVisitor extends Visitor {
     }
 
 
-
     @Override
     public void visit(OpNode node) {
 // propagate accepting the same visitor to all the children
@@ -606,7 +564,6 @@ public class ComputeMemSizeVisitor extends Visitor {
 
 
     }
-
 
 
     @Override

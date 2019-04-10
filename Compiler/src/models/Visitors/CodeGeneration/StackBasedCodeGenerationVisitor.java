@@ -1,61 +1,20 @@
 package models.Visitors.CodeGeneration;
 
-import static models.SymbolTable.SymTabEntry.SymbolDataType.FLOAT;
-import static models.SymbolTable.SymTabEntry.SymbolDataType.INT;
+import models.AST.*;
+import models.SymbolTable.FuncEntry;
+import models.SymbolTable.SymTab;
+import models.SymbolTable.SymTabEntry;
+import models.Terminal;
+import models.Visitors.Visitor;
+import utils.ASTManager;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Stack;
 
-import models.Terminal;
-import models.AST.AParamsNode;
-import models.AST.AddOpNode;
-import models.AST.ArithExprNode;
-import models.AST.AssignStatNode;
-import models.AST.ClassListNode;
-import models.AST.ClassNode;
-import models.AST.DataMemberNode;
-import models.AST.DimListNode;
-import models.AST.ExprNode;
-import models.AST.FCallNode;
-import models.AST.FParamListNode;
-import models.AST.FParamNode;
-import models.AST.FactorNode;
-import models.AST.FactorSignNode;
-import models.AST.ForStatNode;
-import models.AST.FuncDeclNode;
-import models.AST.FuncDefListNode;
-import models.AST.FuncDefNode;
-import models.AST.IdNode;
-import models.AST.IfStatNode;
-import models.AST.IndexListNode;
-import models.AST.InherListNode;
-import models.AST.MainNode;
-import models.AST.MemberListNode;
-import models.AST.MultOpNode;
-import models.AST.Node;
-import models.AST.NumNode;
-import models.AST.OpNode;
-import models.AST.ParamListNode;
-import models.AST.ProgramBlockNode;
-import models.AST.ReadStatNode;
-import models.AST.RelExprNode;
-import models.AST.ReturnStatNode;
-import models.AST.ScopeSpecNode;
-import models.AST.StatBlockNode;
-import models.AST.StatementNode;
-import models.AST.TermNode;
-import models.AST.TypeNode;
-import models.AST.VarDeclNode;
-import models.AST.VarElementNode;
-import models.AST.VarNode;
-import models.AST.WriteStatNode;
-import models.SymbolTable.FuncEntry;
-import models.SymbolTable.SymTab;
-import models.SymbolTable.SymTabEntry;
-import models.Visitors.Visitor;
-import utils.ASTManager;
+import static models.SymbolTable.SymTabEntry.SymbolDataType.FLOAT;
+import static models.SymbolTable.SymTabEntry.SymbolDataType.INT;
 
 /**
  * Visitor to generate moon code for simple expressions and assignment and put
@@ -65,10 +24,10 @@ import utils.ASTManager;
 public class StackBasedCodeGenerationVisitor extends Visitor {
 
     public Stack<String> m_registerPool = new Stack<String>();
-    public String m_moonExecCode = new String();              // moon instructions part
-    public String m_moonDataCode = new String();              // moon data part
-    public String m_mooncodeindent = new String("          ");
-    public String m_outputfilename = new String();
+    public String m_moonExecCode = "";              // moon instructions part
+    public String m_moonDataCode = "";              // moon data part
+    public String m_mooncodeindent = "          ";
+    public String m_outputfilename = "";
 
     public StackBasedCodeGenerationVisitor() {
         // create a pool of registers as a stack of Strings
@@ -125,7 +84,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         return null;
     }
 
-
     public void printRegisterDataOnScreen(Node p_node, String localregister1) {
         m_moonExecCode += m_mooncodeindent + "% put value on stack:" + localregister1 + "\n";
         // make the stack frame pointer point to the called function's stack frame
@@ -172,19 +130,19 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
                         isDataMember = true;
                     }
                 } else {
-                    if(node.getChildren().size()>1){
-                        int relativeOffset = varElementOffset+getSizeOfVarElement(varElementNode,searchSymTab);
-                        m_moonExecCode += m_mooncodeindent + "addi " + localregisterFinal + ","+localregisterFinal+"," + relativeOffset + "\n";
-                    }else {
+                    if (node.getChildren().size() > 1) {
+                        int relativeOffset = varElementOffset + getSizeOfVarElement(varElementNode, searchSymTab);
+                        m_moonExecCode += m_mooncodeindent + "addi " + localregisterFinal + "," + localregisterFinal + "," + relativeOffset + "\n";
+                    } else {
                         m_moonExecCode += m_mooncodeindent + "addi " + localregisterFinal + ",r14," + varElementOffset + "\n";
                     }
-                    if(searchSymTab==null){
+                    if (searchSymTab == null) {
                         searchSymTab = varElementNode.symtab;
                     }
                     SymTabEntry varElementSymTab = searchSymTab.lookupName(varElementNode.getData());
-                    if(varElementSymTab!=null && varElementSymTab.symbolDataType== SymTabEntry.SymbolDataType.CLASS && varElementSymTab.m_type!=null && !varElementSymTab.m_type.isEmpty()){
-                        SymTab classSymTab  = ASTManager.getInstance().getProgNode().symtab.lookupName(varElementSymTab.m_type).m_subtable;
-                        if(classSymTab!=null){
+                    if (varElementSymTab != null && varElementSymTab.symbolDataType == SymTabEntry.SymbolDataType.CLASS && varElementSymTab.m_type != null && !varElementSymTab.m_type.isEmpty()) {
+                        SymTab classSymTab = ASTManager.getInstance().getProgNode().symtab.lookupName(varElementSymTab.m_type).m_subtable;
+                        if (classSymTab != null) {
                             searchSymTab = classSymTab;
                         }
                     }
@@ -204,7 +162,7 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         return localregisterFinal;
     }
 
-    private int getSizeOfVarElement(VarElementNode varElementNode, SymTab searchSymTab){
+    private int getSizeOfVarElement(VarElementNode varElementNode, SymTab searchSymTab) {
         if (searchSymTab == null) {
             searchSymTab = varElementNode.symtab;
         }
@@ -212,7 +170,7 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             DataMemberNode dataMemberNode = (DataMemberNode) varElementNode.getChildren().get(0);
             Node idNode = dataMemberNode.getChildren().get(0);
             SymTabEntry symTabEntry = searchSymTab.lookupName(idNode.m_moonVarName);
-            if(symTabEntry.symbolDataType == SymTabEntry.SymbolDataType.CLASS)
+            if (symTabEntry.symbolDataType == SymTabEntry.SymbolDataType.CLASS)
                 return symTabEntry.m_size;
             else
                 return 0;
@@ -282,8 +240,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             }
         }
     }
-
-    ;
 
     public void visit(NumNode p_node) {
         // First, propagate accepting the same visitor to all the children
@@ -388,7 +344,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         this.m_registerPool.push(localregister4);
     }
 
-
     public void visit(MultOpNode p_node) {
         // First, propagate accepting the same visitor to all the children
         // This effectively achieves Depth-First AST Traversal
@@ -445,7 +400,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         this.m_registerPool.push(localregister3);
         this.m_registerPool.push(localregister4);
     }
-
 
     @Override
     public void visit(RelExprNode node) {
@@ -505,7 +459,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         this.m_registerPool.push(localregister4);
     }
 
-
     public void visit(AssignStatNode p_node) {
         // First, propagate accepting the same visitor to all the children
         // This effectively achieves Depth-First AST Traversal
@@ -523,7 +476,7 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
 
 
         // TODO check conditions ..
-        if ((p_node.getChildren().get(1).m_moonVarName)==null && rightAssignVarNode != null) {
+        if ((p_node.getChildren().get(1).m_moonVarName) == null && rightAssignVarNode != null) {
             String rightAssignVarRegister = getRegisterOfVar(rightAssignVarNode);
             m_moonExecCode += m_mooncodeindent + "lw " + localregister2 + ",0(" + rightAssignVarRegister + ")\n";
         } else {
@@ -614,7 +567,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         this.m_registerPool.push(localregister2);
     }
 
-
     @Override
     public void visit(IfStatNode node) {
         // propagate accepting the same visitor to all the children
@@ -690,7 +642,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         m_moonExecCode += m_mooncodeindent + "jr r15\n";
     }
 
-
     public void visit(ReturnStatNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -730,11 +681,11 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         }
         SymTabEntry tableentryofcalled = p_node.symtab.lookupFunction(p_node.getData(), paramsDec);
         if (tableentryofcalled.m_subtable == null || !(tableentryofcalled instanceof FuncEntry)) {
-            tableentryofcalled = generateCodeForObjectReference(p_node,paramsDec);
-            if(tableentryofcalled==null || tableentryofcalled.m_subtable ==null)
+            tableentryofcalled = generateCodeForObjectReference(p_node, paramsDec);
+            if (tableentryofcalled == null || tableentryofcalled.m_subtable == null)
                 return;
         }
-        FuncEntry tableentryofcalledfunction =(FuncEntry) tableentryofcalled;
+        FuncEntry tableentryofcalledfunction = (FuncEntry) tableentryofcalled;
 
         String localregister1 = this.m_registerPool.pop();
         // pass parameters
@@ -792,21 +743,20 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         this.m_registerPool.push(localregister1);
     }
 
-
-    private SymTabEntry generateCodeForObjectReference(Node fCallNode,String paramsDec){
-        VarNode varNode =getVarNodeFromFcallNode(fCallNode);
+    private SymTabEntry generateCodeForObjectReference(Node fCallNode, String paramsDec) {
+        VarNode varNode = getVarNodeFromFcallNode(fCallNode);
         SymTab symTab = varNode.symtab;
-        if(varNode!=null){
+        if (varNode != null) {
             for (int i = 0; i < varNode.getChildren().size(); i++) {
                 Node child = varNode.getChildren().get(i);
                 SymTabEntry symTabEntry = symTab.lookupName(child.getData());
-                if(symTabEntry.symbolDataType == SymTabEntry.SymbolDataType.CLASS){
-                    symTab  = ASTManager.getInstance().getProgNode().symtab.lookupName(symTabEntry.m_type).m_subtable;
-                    if(symTab==null){
+                if (symTabEntry.symbolDataType == SymTabEntry.SymbolDataType.CLASS) {
+                    symTab = ASTManager.getInstance().getProgNode().symtab.lookupName(symTabEntry.m_type).m_subtable;
+                    if (symTab == null) {
                         return null;
                     }
-                }else if(symTabEntry.symbolType == SymTabEntry.SymbolType.FUNCTION){
-                    return symTab.lookupFunction(child.getData(),paramsDec);
+                } else if (symTabEntry.symbolType == SymTabEntry.SymbolType.FUNCTION) {
+                    return symTab.lookupFunction(child.getData(), paramsDec);
                 }
             }
         }
@@ -814,15 +764,14 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
     }
 
     private VarNode getVarNodeFromFcallNode(Node node) {
-        while(!(node instanceof VarNode)){
-            if(node.getParent()==null){
+        while (!(node instanceof VarNode)) {
+            if (node.getParent() == null) {
                 return null;
             }
             node = node.getParent();
         }
         return (VarNode) node;
     }
-
 
     // Below are the visit methods for node types for which this visitor does
     // not apply. They still have to propagate acceptance of the visitor to
@@ -833,8 +782,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         for (Node child : p_node.getChildren())
             child.accept(this);
     }
-
-    ;
 
     public void visit(ClassNode p_node) {
         // propagate accepting the same visitor to all the children
@@ -856,8 +803,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         for (Node child : p_node.getChildren())
             child.accept(this);
     }
-
-    ;
 
     public void visit(ParamListNode p_node) {
         // propagate accepting the same visitor to all the children
@@ -887,8 +832,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             child.accept(this);
     }
 
-    ;
-
     public void visit(StatBlockNode p_node) {
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
@@ -902,9 +845,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
         for (Node child : p_node.getChildren())
             child.accept(this);
     }
-
-    ;
-
 
     @Override
     public void visit(OpNode node) {
@@ -932,7 +872,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
 
     }
 
-
     @Override
     public void visit(ScopeSpecNode node) {
         // propagate accepting the same visitor to all the children
@@ -941,7 +880,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             child.accept(this);
 
     }
-
 
     @Override
     public void visit(FParamListNode node) {
@@ -970,8 +908,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
 
     }
 
-    ;
-
     @Override
     public void visit(DataMemberNode node) {
         // propagate accepting the same visitor to all the children
@@ -980,8 +916,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             child.accept(this);
 
     }
-
-    ;
 
     @Override
     public void visit(ExprNode node) {
@@ -1010,8 +944,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
 
     }
 
-    ;
-
     @Override
     public void visit(VarElementNode node) {
         // propagate accepting the same visitor to all the children
@@ -1029,7 +961,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             child.accept(this);
 
     }
-
 
     @Override
     public void visit(IndexListNode node) {
@@ -1058,7 +989,6 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
 
     }
 
-
     @Override
     public void visit(StatementNode node) {
         // propagate accepting the same visitor to all the children
@@ -1076,7 +1006,5 @@ public class StackBasedCodeGenerationVisitor extends Visitor {
             child.accept(this);
 
     }
-
-    ;
 
 }

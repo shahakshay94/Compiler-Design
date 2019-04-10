@@ -1,50 +1,9 @@
 package models.Visitors;
 
-import models.Terminal;
-import models.AST.AParamsNode;
-import models.AST.AddOpNode;
-import models.AST.ArithExprNode;
-import models.AST.AssignStatNode;
-import models.AST.ClassListNode;
-import models.AST.ClassNode;
-import models.AST.DataMemberNode;
-import models.AST.DimListNode;
-import models.AST.ExprNode;
-import models.AST.FCallNode;
-import models.AST.FParamListNode;
-import models.AST.FParamNode;
-import models.AST.FactorNode;
-import models.AST.FactorSignNode;
-import models.AST.ForStatNode;
-import models.AST.FuncDeclNode;
-import models.AST.FuncDefListNode;
-import models.AST.FuncDefNode;
-import models.AST.IdNode;
-import models.AST.IfStatNode;
-import models.AST.IndexListNode;
-import models.AST.InherListNode;
-import models.AST.MainNode;
-import models.AST.MemberListNode;
-import models.AST.MultOpNode;
-import models.AST.Node;
-import models.AST.NumNode;
-import models.AST.OpNode;
-import models.AST.ParamListNode;
-import models.AST.ProgramBlockNode;
-import models.AST.ReadStatNode;
-import models.AST.RelExprNode;
-import models.AST.ReturnStatNode;
-import models.AST.ScopeSpecNode;
-import models.AST.StatBlockNode;
-import models.AST.StatementNode;
-import models.AST.TermNode;
-import models.AST.TypeNode;
-import models.AST.VarDeclNode;
-import models.AST.VarElementNode;
-import models.AST.VarNode;
-import models.AST.WriteStatNode;
+import models.AST.*;
 import models.SymbolTable.SymTab;
 import models.SymbolTable.SymTabEntry;
+import models.Terminal;
 import utils.ASTManager;
 import utils.LexicalResponseManager;
 
@@ -164,7 +123,7 @@ public class TypeCheckingVisitor extends Visitor {
 
 
     public void visit(RelExprNode node) {
-        System.out.println("Visiting MultOpNode");
+        System.out.println("Visiting RelExprNode");
         // propagate accepting the same visitor to all the children
         // this effectively achieves Depth-First AST Traversal
         for (Node child : node.getChildren())
@@ -191,7 +150,7 @@ public class TypeCheckingVisitor extends Visitor {
 
         String leftOperandType = node.getChildren().get(0).getType();
         String rightOperandType = node.getChildren().get(1).getType();
-        if (leftOperandType!=null && leftOperandType.equals(rightOperandType))
+        if (leftOperandType != null && leftOperandType.equals(rightOperandType))
             node.setType(leftOperandType);
         else {
             node.setType("typeerror");
@@ -274,7 +233,7 @@ public class TypeCheckingVisitor extends Visitor {
                     if (funcType != null) {
                         nodeType = funcType.returnType;
                         // Set RETVAL symtab entry type
-                        if(child.getChildren().size()>0 && child.getChildren().get(0) instanceof FCallNode){
+                        if (child.getChildren().size() > 0 && child.getChildren().get(0) instanceof FCallNode) {
                             child.getChildren().get(0).symtabentry.m_type = funcType.m_type;
                         }
                     } else {
@@ -318,7 +277,7 @@ public class TypeCheckingVisitor extends Visitor {
         }
         for (SymTabEntry symTabEntry : symTab.m_symlist) {
             if (symTabEntry.symbolType == SymTabEntry.SymbolType.FUNCTION && symTabEntry.symbolName.equals(varName)) {
-                if ((symTabEntry.extraData != null && fParams.equals(symTabEntry.extraData)) || (symTabEntry.extraData == null && fParams.isEmpty())) {
+                if ((fParams.equals(symTabEntry.extraData)) || (symTabEntry.extraData == null && fParams.isEmpty())) {
                     return symTabEntry;
                 }
             }
@@ -328,7 +287,7 @@ public class TypeCheckingVisitor extends Visitor {
             for (SymTabEntry inheritedSymTab : currentSymTabEntry.multiLevelInheritedSymTab) {
                 for (SymTabEntry symTabEntry : inheritedSymTab.m_subtable.m_symlist) {
                     if (symTabEntry.symbolType == SymTabEntry.SymbolType.FUNCTION && symTabEntry.symbolName.equals(varName)) {
-                        if ((symTabEntry.extraData != null && fParams.equals(symTabEntry.extraData)) || (symTabEntry.extraData == null && fParams.isEmpty())) {
+                        if ((fParams.equals(symTabEntry.extraData)) || (symTabEntry.extraData == null && fParams.isEmpty())) {
                             return symTabEntry;
                         }
                     }

@@ -1,59 +1,13 @@
 package models.Visitors;
 
+import models.AST.*;
+import models.SymbolTable.*;
+import models.Terminal;
+import utils.LexicalResponseManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import models.Terminal;
-import models.AST.AParamsNode;
-import models.AST.AddOpNode;
-import models.AST.ArithExprNode;
-import models.AST.AssignStatNode;
-import models.AST.ClassListNode;
-import models.AST.ClassNode;
-import models.AST.DataMemberNode;
-import models.AST.DimListNode;
-import models.AST.ExprNode;
-import models.AST.FCallNode;
-import models.AST.FParamListNode;
-import models.AST.FParamNode;
-import models.AST.FactorNode;
-import models.AST.FactorSignNode;
-import models.AST.ForStatNode;
-import models.AST.FuncDeclNode;
-import models.AST.FuncDefListNode;
-import models.AST.FuncDefNode;
-import models.AST.IdNode;
-import models.AST.IfStatNode;
-import models.AST.IndexListNode;
-import models.AST.InherListNode;
-import models.AST.MainNode;
-import models.AST.MemberListNode;
-import models.AST.MultOpNode;
-import models.AST.Node;
-import models.AST.NumNode;
-import models.AST.OpNode;
-import models.AST.ParamListNode;
-import models.AST.ProgramBlockNode;
-import models.AST.ReadStatNode;
-import models.AST.RelExprNode;
-import models.AST.ReturnStatNode;
-import models.AST.ScopeSpecNode;
-import models.AST.StatBlockNode;
-import models.AST.StatementNode;
-import models.AST.TermNode;
-import models.AST.TypeNode;
-import models.AST.VarDeclNode;
-import models.AST.VarElementNode;
-import models.AST.VarNode;
-import models.AST.WriteStatNode;
-import models.SymbolTable.ClassEntry;
-import models.SymbolTable.ForEntry;
-import models.SymbolTable.FuncEntry;
-import models.SymbolTable.SymTab;
-import models.SymbolTable.SymTabEntry;
-import models.SymbolTable.VarEntry;
-import utils.LexicalResponseManager;
 
 /**
  * Visitor to create symbol tables and their entries.
@@ -78,7 +32,7 @@ public class SymTabCreationVisitor extends Visitor {
         return "t" + m_tempVarNum.toString();
     }
 
-    public void addUniqueSymTabFromInheritence(List<SymTabEntry> intoSymTabEntryList, List<SymTabEntry> fromSymTabEntryList) {
+    public void addUniqueSymTabFromInheritance(List<SymTabEntry> intoSymTabEntryList, List<SymTabEntry> fromSymTabEntryList) {
         for (SymTabEntry symTabEntry : fromSymTabEntryList) {
             if (!intoSymTabEntryList.contains(symTabEntry)) {
                 intoSymTabEntryList.add(symTabEntry);
@@ -196,7 +150,7 @@ public class SymTabCreationVisitor extends Visitor {
                     if (isCircularDependence(symTab, symTabEntryList)) {
                         isCircular = true;
                     }
-                    addUniqueSymTabFromInheritence(allInheritedSymTab, symTabEntryList);
+                    addUniqueSymTabFromInheritance(allInheritedSymTab, symTabEntryList);
                 }
                 symTabEntry.multiLevelInheritedSymTab = allInheritedSymTab;
                 if (isCircular) {
@@ -363,7 +317,7 @@ public class SymTabCreationVisitor extends Visitor {
                     LexicalResponseManager.getInstance().addErrorMessage(node.lineNumber, node.colNumber, "SemanticError", "Class multiple declaration :" + symTab.m_subtable.m_name);
                     isEntryExist = true;
                 }
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
         if (!isEntryExist) {
@@ -536,12 +490,13 @@ public class SymTabCreationVisitor extends Visitor {
             symTab.addEntry(needToAddSymTabEntry);
         }
     }
+
     public void addFparamEntryInSymbolTable(SymTab symTab, SymTabEntry needToAddSymTabEntry) {
         Node createdFromNode = needToAddSymTabEntry.createdFromNode;
         boolean isSymAlreadyDeclared = false;
-        int fparamsCount=0;
+        int fparamsCount = 0;
         for (SymTabEntry symTabEntry : symTab.m_symlist) {
-            if(symTabEntry.symbolType == SymTabEntry.SymbolType.PARAMETER){
+            if (symTabEntry.symbolType == SymTabEntry.SymbolType.PARAMETER) {
                 fparamsCount++;
             }
             if (symTabEntry.m_entry.equals(needToAddSymTabEntry.m_entry)) {
@@ -552,16 +507,16 @@ public class SymTabCreationVisitor extends Visitor {
             }
         }
         if (!isSymAlreadyDeclared) {
-            symTab.addEntry(fparamsCount,needToAddSymTabEntry);
+            symTab.addEntry(fparamsCount, needToAddSymTabEntry);
         }
     }
 
-    public boolean isSymbolAlreadyExist(SymTab symTab, SymTabEntry needToAddSymTabEntry,boolean needToThrowError){
+    public boolean isSymbolAlreadyExist(SymTab symTab, SymTabEntry needToAddSymTabEntry, boolean needToThrowError) {
         Node createdFromNode = needToAddSymTabEntry.createdFromNode;
         boolean isSymAlreadyDeclared = false;
         for (SymTabEntry symTabEntry : symTab.m_symlist) {
             if (symTabEntry.m_entry.equals(needToAddSymTabEntry.m_entry)) {
-                if(needToThrowError) {
+                if (needToThrowError) {
                     createdFromNode.generatePosition();
                     LexicalResponseManager.getInstance().addErrorMessage(createdFromNode.lineNumber, createdFromNode.colNumber, "SemanticError", "Multiple declaration of :" + createdFromNode.symtabentry.m_entry);
                     System.out.println("Multiple declaration of :" + createdFromNode.symtabentry.m_entry);
