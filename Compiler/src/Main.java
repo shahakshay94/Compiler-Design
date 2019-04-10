@@ -33,38 +33,32 @@ public class Main {
 
     public static void startSecondPhase(){
         if(ASTManager.getInstance().getProgNode()==null){
-            System.out.println("Could not able to create AST for given program!");
+            System.out.println("Error in creating AST.... GoodLuck finding the error...");
             return;
         }
 
         ASTManager.getInstance().getProgNode().accept(new SymTabCreationVisitor());
 
-        System.out.println("==TYPE CHECKING PHASE STARTED======");
+        System.out.println("==========================TYPE CHECKING==========================");
 
         ASTManager.getInstance().getProgNode().accept(new TypeCheckingVisitor());
         ASTManager.getInstance().getProgNode().accept(new ComputeMemSizeVisitor());
         ASTManager.getInstance().getProgNode().accept(new StackBasedCodeGenerationVisitor(Constants.OUTPUT_PROGRAM_M));
 
-        System.out.println("==PRINTING TREE======");
-
-//        ASTManager.getInstance().getProgNode().print();
-
-
-        System.out.println("==PRINTING TABLE=====");
+        System.out.println("==========================PRINTING TABLE==========================");
         System.out.println(ASTManager.getInstance().getProgNode().symtab);
 
-        System.out.println("==TABLE PRINTED=======");
 
+        // Below code will print or write the output to files..
         ASTManager.getInstance().getProgNode().print( LexicalResponseManager.getInstance().getASTWriter());
         LexicalResponseManager.getInstance().getSymbolTableWriter().println(ASTManager.getInstance().getProgNode().symtab);
 
     }
     public static void initializeParser(String[] args) {
 
-        createRequiredFolders();
 
-        File d = new File("./");
-        System.out.println(d.getAbsolutePath());
+//        File d = new File("./");
+//        System.out.println(d.getAbsolutePath());
         // get filepath from user input args
         File inputFile = null;
         if (args.length > 0) {
@@ -79,26 +73,6 @@ public class Main {
         BufferManager.getInstance().initialize(inputFile);
     }
 
-    private static void createRequiredFolders() {
-        File resDir = new File("res");
-        if(!resDir.isFile()){
-            resDir.mkdir();
-        }
-
-        File inputDir = new File("res/input");
-        if(!inputDir.isFile()){
-            inputDir.mkdir();
-        }
-
-        File outputDir = new File("res/output");
-        if(!outputDir.isFile()){
-            outputDir.mkdir();
-        }
-        File assetsDir = new File("res/assets");
-        if(!assetsDir.isFile()){
-            assetsDir.mkdir();
-        }
-    }
 }
 
 
