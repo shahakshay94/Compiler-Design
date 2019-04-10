@@ -1,0 +1,25 @@
+// Code generation : Recursion program of Factorial
+
+class Utility{
+    integer a;
+    integer b;
+};
+
+integer factorial(integer n){
+    if(n == 1) then {
+       return (1);
+    }else{
+       return (n*factorial(n-1));
+    };
+};
+
+
+main {
+   integer n;
+   integer ans;
+   n= 5;
+   // Call recursive function ...
+   ans = factorial(n);
+   write(ans);
+
+};

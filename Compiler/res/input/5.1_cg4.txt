@@ -1,0 +1,19 @@
+// Compute Memory of inherited class object
+class A{
+    integer a1;
+    integer b1;
+};
+class Utility : A{
+    integer a;
+    integer b;
+};
+
+
+main {
+   integer n;
+   integer ans;
+   Utility utility;
+   read(n);
+   write(ans);
+
+};

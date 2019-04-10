@@ -1,0 +1,83 @@
+class InheritedUtility {
+ 	integer member1;
+ };
+ 
+class Utility : InheritedUtility {
+
+	 integer var1[4][5][7][8][9][1][0];
+	 float var2;
+	 integer findMax(integer array[100]);
+	 integer findMin(integer array[100]);
+};
+
+integer Utility::findMax(integer array[100]){
+ 	integer maxValue;
+ 	integer idx;
+ 	maxValue = array[100];
+ 	
+ 	for( integer idx = 99; idx > 0; idx = idx - 1 ){
+ 		if(array[idx] > maxValue) then {
+ 				maxValue = array[idx];}
+ 		else{
+ 		
+ 			};
+ 		};
+ 	return (maxValue); 
+ };
+ 
+integer Utility::findMin(integer array[100]){
+	 integer minValue;
+	 integer idx;
+	 minValue = array[100];
+	 for( integer idx = 1; idx <= 99; idx = ( idx ) + 1) {
+ 		if(array[idx] < minValue + 1 / 8) then {
+		 	minValue = array[idx];
+		}
+ 		else{};
+ 		for( integer i = 1; i <= 99; i = ( i ) + 1){
+ 			write(i);
+ 		};
+};
+ 	return (minValue);
+ };
+ 
+integer randomize(){
+	 float value;
+	 value = 100.01 * (2.2 + 3.0 / 7.0006);
+	 value = 1.05 + ((2.04 * 2.47) - 3.0) + 7.0006;
+	 return (value);
+ };
+ 
+main {
+
+ integer sample[100];
+ integer idx;
+ integer maxValue;
+ integer minValue;
+ Utility utility;
+ Utility arrayUtility[2][3][6][7];
+ 
+	 for(integer t = 0; t<=100 ; t = t + 1) {
+	 	read(sample[t]);
+	 	sample[t] = (sample[t] * randomize());
+	 };
+	 
+	 
+ maxValue = utility.findMax(sample);
+ // 3.1.7 conditional statement without brackets
+ if(maxValue == 0) then
+ 	write(maxValue);
+ else {
+ 
+ };
+ minValue = utility.findMin(sample);
+ 
+ utility.var1[4][1][0][0][0][0][0] = 10;
+ 
+ // 3.1.11 access to arrays
+ // 3.1.10 access to class members, nested and including array members
+ arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+ 
+ write(maxValue);
+ write(minValue);
+ };

@@ -1,0 +1,40 @@
+
+class Utility{
+    integer a;
+    integer b;
+    integer getMin(integer x,integer y);
+    integer getMax(integer x,integer y);
+};
+
+integer Utility:: getMin(integer x,integer y){
+    if(x<y) then{
+        return(x);
+    }else{
+        return(y);
+    };
+};
+
+integer Utility:: getMax(integer x,integer y){
+    if(x>y) then{
+        return(x);
+    }else{
+        return(y);
+    };
+};
+
+
+
+main {
+   Utility utility;
+   integer a;
+   integer b;
+   integer max;
+   a= 5;
+   b =10;
+
+   max = utility.getMax(a,b);
+   
+   
+   write(max);
+   write(utility.getMin(a,b));
+};

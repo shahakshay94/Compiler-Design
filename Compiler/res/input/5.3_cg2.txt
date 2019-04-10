@@ -1,0 +1,31 @@
+// Code generation : If statement
+
+class Utility{
+    integer a;
+    integer b;
+};
+
+main {
+   integer a;
+   integer b;
+   integer max;
+   integer min;
+   a= 5;
+   b =10;
+
+    if(a<b) then{
+        min = a;
+    }else{
+       min =b;
+    };
+
+    if(a>b) then{
+        max = a;
+    }else{
+       max =b;
+    };
+
+
+    write(min);
+    write(max);
+};

@@ -1,0 +1,15 @@
+// Code generation of For Loop
+// 5.3.3 for loop
+// 5.3.4 read and write
+class Utility{
+    integer a;
+    integer b;
+};
+
+main {
+   integer a[5];
+   for(integer i=0;i<5;i=i+1){
+      read(a[i]);
+      write(a[i]);
+    };
+};

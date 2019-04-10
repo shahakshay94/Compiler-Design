@@ -1,0 +1,21 @@
+// Code generation : If statement
+
+class Utility{
+    integer a;
+    integer b;
+};
+
+main {
+   integer a;
+   integer b;
+   integer c;
+   integer d;
+   a = 5;
+   b = 10;
+
+    c = ((a * b) / b) + (b * b)*( a - b);
+	d = a + b + (a * a);
+
+    write(c);
+    write(d);
+};

@@ -1,0 +1,48 @@
+
+class x:Utility{
+		integer member1;
+  		integer var1;
+};
+
+class a:x{
+
+};
+
+class InheritedUtility:a {
+
+};
+
+class Utility:InheritedUtility,a{
+
+    integer var1;
+    integer getMax();
+};
+
+
+integer Utility:: getMax(){
+    integer var2;
+    var2 = 5;
+};
+
+
+integer getMin(integer a[3],integer b){
+
+};
+
+
+float randomize(){
+
+	 integer value;
+	 value = 1>2;
+	 return (value);
+ 
+ };
+
+
+
+main {
+    Utility utility;
+    integer var3[3];
+    integer max;
+    Utility myUtility[3][4];
+};

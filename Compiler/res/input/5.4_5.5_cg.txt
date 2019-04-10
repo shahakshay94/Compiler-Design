@@ -1,0 +1,48 @@
+
+class InheritedUtility{
+    integer x;
+    integer y;
+};
+
+class Mul{
+    InheritedUtility inheritedUtil;
+    integer doMul(integer a,integer mul);
+};
+
+class Utility{
+    integer a1;
+    integer b1;
+    Mul mul;
+};
+
+integer Mul:: doMul(integer a,integer mul){
+    return (a*mul);
+};
+
+main {
+   integer a;
+   integer b;
+   integer ans;
+   integer arrayIndex[10];
+   Utility utility;
+   a=10;
+   b=a;
+
+   // 6.5.1 computing the value of an entire expression.
+   // 6.4.3 objects, access to members of basic types.
+   utility.mul.inheritedUtil.x = a*5;
+   utility.mul.inheritedUtil.y = b*5*2;
+
+   // 6.5.4 expression involving an object factor referring to deeply nested object members.
+   ans = utility.mul.doMul(utility.mul.inheritedUtil.x,utility.mul.inheritedUtil.y);
+   write(ans);
+
+   // ANS : 50000
+
+   // 6.5.5 memory allocation for temporary results.
+   // 6.5.3 expression involving an array factor whose indexes are themselves expressions.
+   // 6.4.1 arrays of basic types (integer and float), access to an array’s elements, single or multidimensional.
+   arrayIndex[1+1] = ans;
+   write(arrayIndex[1+1]);
+
+};

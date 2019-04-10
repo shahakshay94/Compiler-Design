@@ -1,0 +1,22 @@
+// Memory computation for Array of basic types
+// 5.1.2
+// 5.1.6 allocate memory arrays of objects
+// 5.1.7 allocate memory for temporary results 
+
+class Utility{
+    integer data[5][5];
+};
+
+main {
+   integer a[5][5];
+   integer ans;
+   float b[5];
+   Utility utility[5];
+
+   a[1][1]=10; 
+   a[2][2]=a[1][1];  
+
+	
+   ans = a[2][2]*a[1][1]; 
+   write(ans);
+};

@@ -1,0 +1,28 @@
+// Multidimensional array
+
+class Utility{
+    integer a;
+    integer b;
+};
+
+integer updateValue(integer a[5][5],integer x,integer y){
+	a[x][y] = x * y;
+    return (a[x][y]); // returning the updated value
+};
+
+
+main {
+   integer data[5][5];
+   integer x;
+   integer y;
+   integer ans;
+   x= 5;
+   y = 1;
+   
+   data[x][y] = x+y;
+
+   // call function with multidimensional data
+   ans = updateValue(data,x,y);
+   write(ans);
+
+};

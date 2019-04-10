@@ -1,0 +1,20 @@
+// Memory computation ..
+
+class Utility{
+    integer a1;
+    integer b1;
+    float floata;
+};
+
+main {
+   integer a;
+   integer b;
+   float c;
+   integer ans;
+
+   a=10; // Tempvar decl
+   b=a;  // TempVar decl
+
+   ans = a*b; // TempVar decl which will store result of a*b
+   write(ans);
+};

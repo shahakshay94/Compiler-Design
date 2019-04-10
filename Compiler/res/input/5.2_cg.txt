@@ -1,0 +1,56 @@
+// 5.2 functions
+class Utility{
+    integer firstNum;
+    integer secondNum;
+    integer sum(integer x,integer y);
+    integer doSum(integer x,integer y);
+};
+
+integer Utility:: sum(integer x,integer y){
+    integer ans;
+    ans = x+y;
+    return(ans);
+};
+
+
+
+// 5.2.3 pass parameters as local values to the function’s code block.
+integer Utility:: doSum(integer x,integer y){
+    // 5.2.2 branch to a function that has been branched upon.
+    // 5.2.7 call to deeply nested member function.
+    return(sum(x,y));
+};
+
+
+
+// 5.2.8 returning object from a function
+
+Utility getClass(integer a,integer b){
+    Utility u;
+    u.firstNum =a*b;
+    u.secondNum =a+b;
+    return(u);
+};
+
+main {
+    Utility u;
+    integer n;
+
+    // 5.2.1 branch to a function’s code block, execute the code block, branch back to the calling function.
+    // 5.2.4 upon function resolution, pass the return value back to the calling function. Also get Object
+    // Get object as return type ...
+    // 5.3.1 assignment statement: correct assignment of the resulting value of an expression to a variable, independently of what is the expression.
+    u = getClass(10,15);
+
+    // 5.3.4 input/output statement: read()/write()
+    write(u.firstNum);
+    write(u.secondNum);
+
+    // 5.2.6 call to member functions.
+    n  = u.doSum(u.firstNum,u.secondNum);
+    write(n);
+
+
+
+
+};

@@ -1,0 +1,13 @@
+// Memory computation ..
+
+class Foo {
+    integer bar; // Member variable    
+};
+
+main{
+  Foo rect; // Local variable
+
+  rect.bar = 10;
+  
+  write(rect.bar);
+};

@@ -1,0 +1,21 @@
+// Code generation for expressions
+
+class Utility{
+    integer a;
+    integer b;
+};
+
+main {
+   integer a;
+   integer b;
+   integer c;
+   integer ans;
+   a= 5;
+   b =10;
+   c = 15;
+
+   // Compute expression
+   ans = a*b+c*a+a+c+a; // ANS : 150
+
+   write(ans);
+};

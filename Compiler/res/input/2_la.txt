@@ -1,0 +1,33 @@
+// 2 LEXICAL ANALYSIS
+
+// 2.1 tokenizing
+// 2.1.1 integers and floating point numbers (valid/invalid numbers according to assignment 1 handout)
+// 2.1.2 comments: inline comments, block comments, unending block comments, nested block comments 
+// this is the example of single line comment
+
+
+
+/* This is a multi line comments  which ends
+    class A{
+
+    };
+*/
+
+
+// this code should run without any lexical error after
+// commenting out the invalid identifiers
+
+main {
+
+	integer a5; // valid
+	integer abc123; // valid
+	float abc12323; // valid
+	integer abc_1; // valid
+	integer abc1_; // valid
+	// integer _1abc;
+	// integer 1_abc;
+	// integer 1abc;
+	
+	a5 = 12343;
+	 
+};
