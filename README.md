@@ -2,11 +2,11 @@
 # Grammar
 The syntactical definition is using the following conventions: 
 Terminals (lexical elements, or tokens) are represented in single quotes 'likeThis'.
-  - Non-terminals are represented in italics likeThis.
-  - The empty phrase is represented by EPSILON.
-  - EBNF-style repetition notation is represented using curly brackets {like this}. It represents zero or more
+  - Non-terminals are represented in italics `likeThis`.
+  - The empty phrase is represented by `EPSILON`.
+  - `EBNF-style` repetition notation is represented using curly brackets {like this}. It represents zero or more
   occurrence of the sentential form enclosed in the brackets.
-  - EBNF-style optionality notation is represented using square brackets [like this]. It represents zero or one
+  - `EBNF-style` optionality notation is represented using square brackets [like this]. It represents zero or one
   occurrence of the sentential form enclosed in the brackets.
   - The non-terminal **<prog>** is the starting symbol of the grammar. 
   
